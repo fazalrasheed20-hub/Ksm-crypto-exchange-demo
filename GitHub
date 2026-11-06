@@ -1,0 +1,73 @@
+import streamlit as st
+
+st.set_page_config(
+    page_title="My Crypto Exchange",
+    page_icon="🚀",
+    layout="centered"
+)
+
+st.title("🚀 My Crypto Exchange")
+st.subheader("Demo Trading Platform")
+
+st.warning("This is a demo app. No real money is involved.")
+
+# Demo account
+if "balance" not in st.session_state:
+    st.session_state.balance = 1000.0
+
+if "btc" not in st.session_state:
+    st.session_state.btc = 0.0
+
+# Demo BTC price
+PRICE = 65000.0
+
+st.metric("BTC / USDT Price", f"${PRICE:,.2f}")
+
+st.divider()
+
+st.subheader("💰 Your Wallet")
+
+col1, col2 = st.columns(2)
+
+col1.metric("USDT Balance", f"{st.session_state.balance:.2f}")
+col2.metric("BTC Balance", f"{st.session_state.btc:.8f}")
+
+st.divider()
+
+st.subheader("📈 Demo Trading")
+
+action = st.selectbox("Select Trade", ["BUY", "SELL"])
+
+amount = st.number_input(
+    "Enter Amount (USDT)",
+    min_value=1.0,
+    value=100.0
+)
+
+if st.button("Execute Trade"):
+
+    btc_amount = amount / PRICE
+
+    if action == "BUY":
+
+        if amount <= st.session_state.balance:
+            st.session_state.balance -= amount
+            st.session_state.btc += btc_amount
+            st.success("BTC purchased successfully!")
+
+        else:
+            st.error("Insufficient USDT balance!")
+
+    else:
+
+        if btc_amount <= st.session_state.btc:
+            st.session_state.btc -= btc_amount
+            st.session_state.balance += amount
+            st.success("BTC sold successfully!")
+
+        else:
+            st.error("Insufficient BTC balance!")
+
+st.divider()
+
+st.caption("My First Crypto Exchange | Demo Version")
